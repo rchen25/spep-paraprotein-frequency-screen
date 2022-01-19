@@ -4,6 +4,7 @@
 ## About
 
 We provide a method for screening SPEPs for paraproteins.
+The model parameters used for this tool were tuned based on a private dataset of samples from the authors' clinical laboratory. 
 
 
 ## Usage
