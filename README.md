@@ -6,6 +6,9 @@
 We provide a method for screening SPEPs for paraproteins.
 The model parameters used for this tool were tuned based on a private dataset of samples from the authors' clinical laboratory. 
 
+### Required software and packages
+
+The tool requires usage of `python3`, and the packages `numpy`, `scikit-learn`, and `pandas` (see `requirements.txt`). An environment for running the code is provided in `/env` (see instructions this page). 
 
 ## Usage
 
@@ -24,7 +27,7 @@ Sample input file is in `data/sample_input_data.csv`
 ### Steps to run screening tool
 #### Step 1
 
-Initialize environment
+If your setup does not include the required Python version and packages, a virtual environment is provided in `/env`. The environment can be initialized with the following:
 
 ```
 source env/bin/activate
