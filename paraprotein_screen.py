@@ -18,9 +18,9 @@ def main():
 
 
 
-	print('Paraprotein screening tool ... ')
-	print('input filename:', args.infile)
-	print('number of samples to screen: ', len(df_input_samples_to_screen))
+	# print('Paraprotein screening tool ... ')
+	# print('input filename:', args.infile)
+	# print('number of samples to screen: ', len(df_input_samples_to_screen))
 
 
 	# data processing #################################################################################################
@@ -82,16 +82,9 @@ def main():
 
     ## initialize model
 	model_highpass = HighFreqScreener()
-	print('\n---- model parameters ----')
-	print('model frequency cutoff:', model_highpass.freq_cutoff)
-	print('model magnitude cutoff:', model_highpass.magnitude_cutoff)
-	print('probability for positive prediction:', model_highpass.threshold_for_likelihood_ratio_90)
 
-	print('\n---- model scores ----')
 	y_proba = model_highpass.predict_proba(X_serum_minus_control_gamma_region)
 	y_class = (y_proba > model_highpass.threshold_for_likelihood_ratio_90).astype(int)
-	print('predicted proabilities:\n', y_proba)
-	print('predicted class:\n', y_class)
 
 	df_output = df_input_samples_to_screen.copy(deep=True)
 	del df_output['sebiaSerumGelControlCurve_landmarks']
@@ -104,6 +97,7 @@ def main():
 	# output
 	df_output.to_csv('./output.csv', header = True, index = False)
 	df_output.to_json('./output.json', orient = 'records')
+	print(df_output.to_json(orient = 'records'))
 
 if __name__ == "__main__":
 	main()
