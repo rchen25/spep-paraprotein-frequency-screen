@@ -1,0 +1,172 @@
+
+<!DOCTYPE html>
+
+<html>
+<head>
+<title>spep-paraprotein-frequency-screen REST API</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<script src="https://trddx.emory.edu/spep/jsonview.js"></script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  
+<style>
+    
+body {
+    font-family: monospace; 
+}
+    
+</style>
+
+<script>
+
+var sample;
+
+function getSample() {
+    
+    document.querySelector("#working").style.display = "block";
+    var xhttp = new XMLHttpRequest();
+    xhttp.open("GET", "https://trddx.emory.edu/spep/resources/samples", true);
+    xhttp.setRequestHeader("Content-Type", "application/json");
+    xhttp.responseType = "json";
+    xhttp.onload = function() {
+        sample = this.response;
+        document.querySelector("#working").style.display = "none";
+        return;
+    }
+    xhttp.send();
+    return;
+    
+}
+
+function postSample() {
+    
+    document.querySelector("#working").style.display = "block";
+    sample.sebiaSerumCurve = document.querySelector("#sebiaSerumCurve").value;
+    sample.sebiaSerumGelControlCurve = document.querySelector("#sebiaSerumGelControlCurve").value;
+    var xhttp = new XMLHttpRequest();
+    xhttp.open("POST", "https://trddx.emory.edu/spep/resources/samples", true);
+    xhttp.setRequestHeader("Content-Type", "application/json");
+    xhttp.responseType = "json";
+    xhttp.onload = function() {
+        sample = this.response;
+        document.querySelector("#prediction").textContent = sample.prediction + ( sample.prediction == 1 ? " (paraprotein detected)" : " (paraprotein not detected)" );
+        document.querySelector("#gammaRegionCutoff").textContent = sample.gamma_region_cutoff;
+        document.querySelector("#json").innerHTML = "";
+        var tree = jsonview.create(sample);
+        jsonview.render(tree, document.querySelector("#json"));
+        jsonview.expand(tree);
+        tree.children.forEach(function(e) { jsonview.collapse(e); });
+        chartSample();
+        curlSample();
+        document.querySelector("#working").style.display = "none";
+    }
+    xhttp.send(JSON.stringify(sample));
+    return;
+    
+}
+
+function chartSample() {
+    
+    var data = new google.visualization.DataTable();
+    data.addColumn("number", "Position");
+    data.addColumn("number", "Sample");
+    data.addColumn("number", "Control");
+    for(var x = 0; x < sample.sebiaSerumCurve_intArr.length; x++) {
+        data.addRow([x, sample.sebiaSerumCurve_intArr[x], sample.sebiaSerumGelControlCurve_intArr[x]]);
+    }
+    document.querySelector("#curves").textContent = "";
+    var chart = new google.visualization.LineChart(document.querySelector("#curves"));
+    var options = {
+        hAxis: {
+            title: 'Position'
+        },
+        vAxis: {
+            title: 'Intensity'
+        }
+    };
+    chart.draw(data, options);
+    return;
+    
+}
+
+function curlSample() {
+
+    document.querySelector("#curl").innerHTML = "<pre>curl -X POST -H 'Content-Type: application/json' -d \\<br/>"
+        + "'{ <br/>"
+        + "    \"sebiaSerumCurve\" : <br/>"
+        + "        \"" + sample.sebiaSerumCurve + "\", <br/>"
+        + "    \"sebiaSerumGelControlCurve\" : <br/>"
+        + "        \"" + sample.sebiaSerumGelControlCurve + "\" <br/>"
+        + "}' \\<br/>"
+        + "https://trddx.emory.edu/spep/resources/samples</pre>";
+    return;
+        
+}
+
+
+window.addEventListener("load", function() {
+
+    google.charts.load('current', {packages: ['corechart', 'line']});
+    
+    getSample();
+
+    document.querySelector("#POST").addEventListener("click", function() {
+        postSample();
+        return;
+    });
+
+    return;
+
+});
+
+</script>
+
+</head>
+
+<body>
+<div id="working" style="position: fixed; top: 0px; width: 150px; left: 50%; margin-left: -75px; text-align: center; background-color: red; color: white; font-weight: bold;">working...</div>
+<h1>Endpoint: POST /spep/resources/samples<h1>
+<h2>Description</h2>
+<p>This endpoint consumes a sparsely populated JSON <i>Sample</i> object containing a gel densitometric scan (sebiaSerumCurve) in Sebia's hexadecimal
+format [link to Sebia documentation?] and produces a fully populated JSON <i>Sample</i> object with a paraprotein prediction (prediction: 0 = paraprotein not detected, 1 =
+paraprotein detected). The prediction uses a previously trained spatial frequency domain Python scikit-learn model. The
+curve for the control lane on the same gel (sebiaSerumGelControlCurve) is also required.
+In Sebia's hexadecimal encoding scheme, the cathodal end of the gel is position 0 and
+the anodal end of the gel is position 299. The demonstration curve data below were acquired on
+a Sebia HYDRASYS instrument.</p>
+<p>In addition to a paraprotein prediction, the JSON object produced by this endpoint includes the
+gel position identfied as the boundary of the gamma region (gamma_region_cutoff) and integer array
+representations of the hexadecimal sample and control curves (sebiumSerumCurve_intArr and
+sebiaSerumGelControlCurve_int_arr). The gamma region boundary position is encoded in the Sebia
+hexadecimal curve data.
+<h2>Demonstration</h2>
+<h3>Inputs (prepopulated with demonstration curves)</h3>
+
+    <form>
+        <table>
+            <tr><td>Sample Curve</td><td>:</td><td><input id="sebiaSerumCurve" type="text" size="100" value="800400040004000400030003000300030004000400040004000400040004000300030003000300030003000200020001000100010000000000000000000100020004000500060008000B0011001BC02B0046007400BF013901F202FC0460061E081E0A330C1C0D850E160D950BF4098506D5047D02C601A800FC009900620042C0300025001E0019001500120010000F000E000D000C000B000B000A000A000A000A000A000A000A000A000A00090009000800080007000700070007000700080008000700070006400600060007000700080009000A000B000C000D000D000E000E000E000E000E000F001100140017001AC01D0020002300260029002E0036004100500060006C0071006F0068C0630063006C007E009600AE00BD00BC00A9008B006A004D003800290020001A001740160017001A001D00220028002D003100320030002EC02E002E00310035003A00400046004C00520057005C005F0060005F005B0056004E0046003E00380034403300340037003A003D00410048005300610071007E0083007D006C005700440038003280320036003D0046004E00540054004E00430036002A001F001800130010000E000C000B000900080007000700068006000600070008000A000D0012001B0028003E0060009600E6015A01FA02D003E2053006AD083709950A6B0A2E0895062003B8020A0111008C0049002900190010000B00080007000600060006000600070007000800080009000B000C000E000F00100010000F000E000D000B000A0009000800080007000700070007000700080008000900090009000900090009000A000A800A"/></td></tr>
+            <tr><td>Control Curve</td><td>:</td><td><input id="sebiaSerumGelControlCurve" type="text" size="100" value="800400060006000700070006000600060008000B000E001100140015001400140013001300120011000F000D000C000B000B000A000A0009000800080009000B000E00120017001A001B001B001C001F00230027002E0035003E004500490047004400430046004A004D004E004F004F00510052005300530052005200530055005B00610067006B006E00710076007900790077007500760079007B007B00790073006C00670063006300640067006900670062005C005800560054004F004A0045004200400041004200420040003F803E003E003F003F003F004000410042004300440042003F003D003C003C003C003E0040004300460048004B004E005200580060006900710078007DC083008C009A00AC00C100D500E000DC00CA00AD008D0070005A004B004000390034003240310035003D00480055005F0066006800650060005AC059005B00610067006C007000740077007B00800085008800880084007E0076006E0065005E005840550056005B006400710081009400A300AB00A70096007C005F00470035002A0024802300230026002A002F0036003E0045004A004B004900420038002D0023001A0014000F000C00090006000400020000800000000001000200040007000B0013002000360057008A00D4013E01D10294039204CE064607EE09AE0B590C9F0D250C730A3F0722042B02330125009B00550031001E0014000E000B00090009000A000D001200160014000F000B000B000C000D000E000E000E000E000E000F000F000E000C000800050003000300040003000200010001000200050009000E001200130011000F800A"/></td></tr>
+            <tr><td></td><td></td><td><input id="POST" type="button" value="POST"/></td></tr>
+        </table>
+    </form>
+    <h3>Outputs</h3>
+    <table>
+        <tr><td>Prediction</td><td>:</td><td><span id="prediction"><i>No Sample POSTed to service yet.</i></span></td></tr>
+        <tr><td>Gamma Region Cutoff</td><td>:</td><td><span id="gammaRegionCutoff"><i>No Sample POSTed to service yet.</i></span></td></tr>
+    </table>
+    <h3>Linux command-line RESTful Web Service Invocation using curl</h3>
+    <div id="curl" style="width: 100%; overflow-x: auto; border: 1px solid black;">
+        <i>No Sample POSTed to service yet.</i>
+    </div>
+    <h3>JSON Viewer showing <i>Sample</i> Object (this is what is consumed and produced by the RESTful web service)</h3>
+    <div id="json" style="width: 100%; overflow-x: auto; border: 1px solid black; font-family: monospace;">
+        <i>No Sample POSTed to service yet.</i>
+    </div>
+    <h3>Curves Plotted using Google Charts (anodal = right)</h3>
+    <div id="curves">
+        <i>No Sample POSTed to service yet.</i>
+    </div>
+    
+</body>
+
+</html>

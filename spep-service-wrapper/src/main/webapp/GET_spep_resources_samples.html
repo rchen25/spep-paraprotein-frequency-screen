@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+
+<html>
+<head>
+<title>spep-paraprotein-frequency-screen REST API</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<script src="https://trddx.emory.edu/spep/jsonview.js"></script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  
+<style>
+    
+body {
+    font-family: monospace; 
+}
+    
+</style>
+
+<script>
+
+var sample;
+
+function getSample() {
+    
+    document.querySelector("#working").style.display = "block";
+    var xhttp = new XMLHttpRequest();
+    xhttp.open("GET", "https://trddx.emory.edu/spep/resources/samples", true);
+    xhttp.setRequestHeader("Content-Type", "application/json");
+    xhttp.responseType = "json";
+    xhttp.onload = function() {
+        sample = this.response;
+        document.querySelector("#json").innerHTML = "";
+        var tree = jsonview.create(sample);
+        jsonview.render(tree, document.querySelector("#json"));
+        jsonview.expand(tree);
+        tree.children.forEach(function(e) { jsonview.collapse(e); });
+        document.querySelector("#working").style.display = "none";
+		curlSample();
+        return;
+    }
+    xhttp.send();
+    return;
+    
+}
+
+function curlSample() {
+
+    document.querySelector("#curl").innerHTML = "<pre>curl -X GET -H 'Content-Type: application/json' https://trddx.emory.edu/spep/resources/samples</pre>";
+    return;
+        
+}
+
+
+window.addEventListener("load", function() {
+
+    document.querySelector("#GET").addEventListener("click", function() {
+        getSample();
+        return;
+    });
+
+    return;
+
+});
+
+</script>
+
+</head>
+
+<body>
+<div id="working" style="position: fixed; top: 0px; width: 150px; left: 50%; margin-left: -75px; text-align: center; background-color: red; color: white; font-weight: bold; display: none;">working...</div>
+<h1>Endpoint: GET /spep/resources/samples<h1>
+<h2>Description</h2>
+<p>This endpoint produces an unpopulated (all attributes are <i>null</i>)
+JSON <i>Sample</i> object. This is a convenience method to allow
+clients to easily instantiate new <i>Sample</i> objects.</p>
+<h2>Demonstration</h2>
+<h3>Inputs</h3>
+
+    <form>
+        <table>
+            <tr><td colspan="3"><i>None</i></td></tr>
+            <tr><td></td><td></td><td><input id="GET" type="button" value="GET"/></td></tr>
+        </table>
+    </form>
+    <h3>Outputs</h3>
+    <table>
+        <tr><td>Prediction</td><td>:</td><td><span id="prediction"><i>No Sample GETted from service yet.</i></span></td></tr>
+        <tr><td>Gamma Region Cutoff</td><td>:</td><td><span id="gammaRegionCutoff"><i>No Sample GETted from service yet.</i></span></td></tr>
+    </table>
+    <h3>Linux command-line RESTful Web Service Invocation using curl</h3>
+    <div id="curl" style="width: 100%; overflow-x: auto; border: 1px solid black;">
+        <i>No Sample GETted from service yet.</i>
+    </div>
+    <h3>JSON Viewer showing <i>Sample</i> Object (this is what is produced by the RESTful web service)</h3>
+    <div id="json" style="width: 100%; overflow-x: auto; border: 1px solid black; font-family: monospace;">
+        <i>No Sample GETted from service yet.</i>
+    </div>
+    
+</body>
+
+</html>
