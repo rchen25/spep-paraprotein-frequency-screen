@@ -15,6 +15,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 @Path("samples")
@@ -47,6 +48,20 @@ public class Samples {
 
     }
 
+    @GET
+    @Path("{sampleCurve}/{controlCurve}")
+    @Produces("application/json")
+    public Sample getJson(@PathParam("sampleCurve") String sampleCurve, @PathParam("controlCurve") String controlCurve) throws IOException, InterruptedException {
+
+        Sample sample = new Sample();
+        sample.sebiaSerumCurveHex = sampleCurve;
+        sample.sebiaSerumGelControlCurveHex = controlCurve;
+        sample = postJson(sample);
+
+        return sample;
+
+    }
+    
     @POST
     @Consumes("application/json")
     @Produces("application/json")
