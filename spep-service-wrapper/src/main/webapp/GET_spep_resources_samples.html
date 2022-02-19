@@ -36,7 +36,7 @@ function getSample() {
         jsonview.expand(tree);
         tree.children.forEach(function(e) { jsonview.collapse(e); });
         document.querySelector("#working").style.display = "none";
-		curlSample();
+        curlSample();
         return;
     }
     xhttp.send();
