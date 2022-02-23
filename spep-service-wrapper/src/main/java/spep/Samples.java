@@ -16,6 +16,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.Produces;
 
 @Path("samples")
@@ -36,27 +37,38 @@ public class Samples {
         public Integer gammaRegionCutoff;
         @JsonProperty("prediction")
         public Integer prediction;
+	@JsonProperty("scikitLearnModelName")
+	public String scikitLearnModelName;
         public Sample() {
+        }
+        public Sample(String model) {
+            this.scikitLearnModelName = model;
         }
     }
 
     @GET
     @Produces("application/json")
-    public Sample getJson() throws IOException {
+    public Sample getJson(@QueryParam("model") String model) throws IOException {
 
-        return new Sample();
+        if(model == null || model.length() == 0) { model = "euh-immunology-v1.0"; }
+        if(!"euh-immunology-v1.0".equals(model)) { throw new RuntimeException("Currently, only model 'euh-immunology-v1.0' is supported."); }
+
+        return new Sample(model);
 
     }
 
     @GET
     @Path("{sampleCurve}/{controlCurve}")
     @Produces("application/json")
-    public Sample getJson(@PathParam("sampleCurve") String sampleCurve, @PathParam("controlCurve") String controlCurve) throws IOException, InterruptedException {
+    public Sample getJson(@PathParam("sampleCurve") String sampleCurve, @PathParam("controlCurve") String controlCurve, @QueryParam("model") String model) throws IOException, InterruptedException {
 
-        Sample sample = new Sample();
+        if(model == null || model.length() == 0) { model = "euh-immunology-v1.0"; }
+        if(!"euh-immunology-v1.0".equals(model)) { throw new RuntimeException("Currently, only model 'euh-immunology-v1.0' is supported."); }
+
+        Sample sample = new Sample(model);
         sample.sebiaSerumCurveHex = sampleCurve;
         sample.sebiaSerumGelControlCurveHex = controlCurve;
-        sample = postJson(sample);
+        sample = postJson(sample, model);
 
         return sample;
 
@@ -65,7 +77,10 @@ public class Samples {
     @POST
     @Consumes("application/json")
     @Produces("application/json")
-    public Sample postJson(Sample sample) throws IOException, InterruptedException {
+    public Sample postJson(Sample sample, @QueryParam("model") String model) throws IOException, InterruptedException {
+
+        if(model == null || model.length() == 0) { model = "euh-immunology-v1.0"; }
+        if(!"euh-immunology-v1.0".equals(model)) { throw new RuntimeException("Currently, only model 'euh-immunology-v1.0' is supported."); }
 
         File csvFile = File.createTempFile("sample", ".csv");
         PrintStream csvPrintStream = new PrintStream(csvFile);
@@ -100,6 +115,7 @@ public class Samples {
         // Jackson rejects the quotation marks around the integer arrays, so I am stripping them
         Sample[] samples = om.readValue(pSb.toString().replaceAll("\"\\[", "\\[").replaceAll("\\]\"", "\\]"), Sample[].class);
 
+	samples[0].scikitLearnModelName = model;
         return samples[0];
 
     }

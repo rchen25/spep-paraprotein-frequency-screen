@@ -96,7 +96,7 @@ window.addEventListener("load", function() {
 
 <body>
 <div id="working" style="position: fixed; top: 0px; width: 150px; left: 50%; margin-left: -75px; text-align: center; background-color: red; color: white; font-weight: bold; display: none;">working...</div>
-<h1>Endpoint: GET /spep/resources/samples/{sebiaSerumCurve}/{sebiaSerumGelControlCurve}<h1>
+<h1>Endpoint: GET /spep/resources/samples/{sebiaSerumCurve}/{sebiaSerumGelControlCurve}?<span style="color: gray;">model={scikitLearnModelName}</span><h1>
 <h2>Description</h2>
 <p>This endpoint consumes sample and control curves passed as URL path parameters in Sebia's hexadecimal
 format [link to Sebia documentation?] and produces a fully populated JSON <i>Sample</i> object with a paraprotein prediction (prediction: 0 = paraprotein not detected, 1 =
@@ -104,7 +104,8 @@ paraprotein detected). The prediction uses a previously trained spatial frequenc
 curve for the control lane on the same gel (sebiaSerumGelControlCurve) is also required.
 In Sebia's hexadecimal encoding scheme, the cathodal end of the gel is position 0 and
 the anodal end of the gel is position 299. The demonstration curve data below were acquired on
-a Sebia HYDRASYS instrument.</p>
+a Sebia HYDRASYS instrument.
+The model parameter is optional and defaults to "euh-immunology-v1.0" if not specified.</p>
 <p>In addition to a paraprotein prediction, the JSON object produced by this endpoint includes the
 gel position identfied as the boundary of the gamma region (gamma_region_cutoff) and integer array
 representations of the hexadecimal sample and control curves (sebiumSerumCurve_intArr and

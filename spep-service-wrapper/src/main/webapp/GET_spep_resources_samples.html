@@ -69,11 +69,12 @@ window.addEventListener("load", function() {
 
 <body>
 <div id="working" style="position: fixed; top: 0px; width: 150px; left: 50%; margin-left: -75px; text-align: center; background-color: red; color: white; font-weight: bold; display: none;">working...</div>
-<h1>Endpoint: GET /spep/resources/samples<h1>
+<h1>Endpoint: GET /spep/resources/samples?<span style="color: gray;">model={scikitLearnModelName}</span><h1>
 <h2>Description</h2>
 <p>This endpoint produces an unpopulated (all attributes are <i>null</i>)
 JSON <i>Sample</i> object. This is a convenience method to allow
-clients to easily instantiate new <i>Sample</i> objects.</p>
+clients to easily instantiate new <i>Sample</i> objects.
+The model parameter is optional and defaults to "euh-immunology-v1.0" if not specified.</p>
 <h2>Demonstration</h2>
 <h3>Inputs</h3>
 
