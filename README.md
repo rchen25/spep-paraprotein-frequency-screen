@@ -74,3 +74,27 @@ Each item in output will have the following:
 * **prediction**: predicted paraprotein status (1 = positive prediction, 0 = negative prediction)
 
 
+## Usage - Microsoft Office Excel 365 script for automated SPEP scoring
+
+### Step 1
+
+Download the spreadsheet file (office365_spep_predictor_v2.xlsx) and upload into Excel 365 online. 
+
+### Step 2
+
+Click the "Clear Predictions" button to clear populated data for predictions in sample curves in the sheet.
+
+![excel screenshot](img/excel_macro_1.png)
+
+### Step 3
+
+Copy and paste sample information (may include sample ID, patient name, and densitometry curve in hexadecimal format) into column C/D/E from row 2 onwards. In our sample file, the input represents 15 lanes on a gel. Lane 1 is a negative control without a paraprotein. Lane 2 is a control containing hypergammaglobulinemia. After data is populated, click the "Make Predictions" button which will call the script to send a POST request to our API, thereby scoring each sample; subsequently, the predictions will populate in column G. Columns I-onwards are populated solely so that the spreadsheet can allow for charts to be drawn; they are not to be used by the user. 
+
+![excel screenshot](img/excel_macro_2.png)
+
+
+### Step 4
+
+Click the "Switch Chart to Selected Row" button to draw a plot of the sample and control together for the particular row in which a cell has been selected. 
+
+![excel screenshot](img/excel_macro_3.png)
