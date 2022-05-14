@@ -10,7 +10,7 @@ The model parameters used for this tool were tuned based on a private dataset of
 
 The tool requires usage of `python3`, and the packages `numpy`, `scikit-learn`, and `pandas` (see `requirements.txt`). An environment for running the code is provided in `/env` (see instructions this page). 
 
-## Usage
+## Usage - Scoring the model on input data
 
 The method takes as input, a serum protein electrophoresis densitometry curve as well as an associated control densitometry curve (does not contain a paraprotein). 
 
@@ -72,6 +72,9 @@ Each item in output will have the following:
 * **sebiaSerumGelControlCurve_intArr**: control curve as integer array
 * **gamma_region_cutoff**: index of element in integer array that delimits the gamma region (identified from control)
 * **prediction**: predicted paraprotein status (1 = positive prediction, 0 = negative prediction)
+
+## Usage - calibrating the model on sample data
+
 
 
 ## Usage - Microsoft Office Excel 365 script for automated SPEP scoring
