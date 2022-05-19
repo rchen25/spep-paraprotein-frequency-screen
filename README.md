@@ -75,6 +75,23 @@ Each item in output will have the following:
 
 ## Usage - calibrating the model on sample data
 
+To see an example of training the model on sample data, and then scoring on sample data, please run:
+
+```
+python calibrate_model_custom_data.py data/sample_input_data_int.csv --input_int 1
+```
+
+Output:
+
+```
+Model - trained on custom data
+freq_cutoff: 0.0
+magnitude_cutoff: 0.0004890477401621532
+threshold_for_likelihood_ratio_90: 0.01360544
+
+```
+
+Please modify code blocks in `calibrate_model_custom_data.py` to integrate the model into your own workflow.
 
 
 ## Usage - Microsoft Office Excel 365 script for automated SPEP scoring
