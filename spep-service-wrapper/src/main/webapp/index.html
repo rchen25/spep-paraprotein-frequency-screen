@@ -25,7 +25,7 @@ body {
 <center>January 22, 2022</center>
 
 <p>This REST API makes paraprotein predictions from densitometric scans of serum protein electrophoresis (SPEP) gels.
-The method requires the densitometric scan in Sebia's hexadecimal format, such as that produced by a Sebia HYDRASYS instrument.
+The method requires the densitometric scan in Sebia's hexadecimal format<sup>*</sup>, such as that produced by a Sebia HYDRASYS instrument.
 The method uses spatial frequency domain features of the densitometric scan and a Python scikit-learn model that we trained using cases in our clinical immunology laboratory.
 In the future, we hope to add additional endpoints to support formats beyonds Sebia's hexadecimal format and that will allow REST API clients to train their own Python scikit-learn models.</p>
 
@@ -80,6 +80,8 @@ This endpoint makes a paraprotein prediction (i.e., paraprotein detected or para
 <p>
 This endpoint makes a paraprotein prediction (i.e., paraprotein detected or paraprotein not detected) given a sample and control curve in a <i>Sample</i> object.
 </p>
+
+<p><sup>*</sup>Sebia's hexadecimal curve format consists of a 300-element array of 16-bit elements ordered from cathodal to anodal. Each element consists four hexadecimal digits XYYY, where X is a "dot type" (non-zero if the point represents a region delimiter) and YYY is the amplitude (right-aligned, minimum = 000, maximum = FFF).</p> 
  
 </body>
 

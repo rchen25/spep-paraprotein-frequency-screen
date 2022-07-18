@@ -128,7 +128,7 @@ window.addEventListener("load", function() {
 <h1>Endpoint: POST /spep/resources/samples?<span style="color: gray;">model={scikitLearnModelName}</span><h1>
 <h2>Description</h2>
 <p>This endpoint consumes a sparsely populated JSON <i>Sample</i> object containing a gel densitometric scan (sebiaSerumCurve) in Sebia's hexadecimal
-format [link to Sebia documentation?] and produces a fully populated JSON <i>Sample</i> object with a paraprotein prediction (prediction: 0 = paraprotein not detected, 1 =
+format<sup>*</sup> and produces a fully populated JSON <i>Sample</i> object with a paraprotein prediction (prediction: 0 = paraprotein not detected, 1 =
 paraprotein detected). The prediction uses a previously trained spatial frequency domain Python scikit-learn model. The
 curve for the control lane on the same gel (sebiaSerumGelControlCurve) is also required.
 In Sebia's hexadecimal encoding scheme, the cathodal end of the gel is position 0 and
@@ -167,6 +167,8 @@ hexadecimal curve data.
     <div id="curves">
         <i>No Sample POSTed to service yet.</i>
     </div>
+
+    <p><sup>*</sup>Sebia's hexadecimal curve format consists of a 300-element array of 16-bit elements ordered from cathodal to anodal. Each element consists four hexadecimal digits XYYY, where X is a "dot type" (non-zero if the point represents a region delimiter) and YYY is the amplitude (right-aligned, minimum = 000, maximum = FFF).</p>
     
 </body>
 
